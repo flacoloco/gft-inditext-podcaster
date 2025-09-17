@@ -1,2 +1,3 @@
 // Export all atom components here
-// Example: export { default as Button } from './Button';
+export { default as HomeTitle } from './HomeTitle/HomeTitle';
+export { default as PodcastItem } from './PodcastItem/PodcastItem';

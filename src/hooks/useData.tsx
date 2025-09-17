@@ -27,6 +27,7 @@ export const useData = <T = unknown>(url: string): [T | null, Error | null, bool
         }
 
         const result = await response.json();
+        console.log(result);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('An unknown error occurred'));
