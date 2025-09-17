@@ -15,7 +15,7 @@ export const useData = <T = unknown>(url: string): [T | null, Error | null, bool
       return;
     }
 
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       setIsLoading(true);
       setError(null);
 

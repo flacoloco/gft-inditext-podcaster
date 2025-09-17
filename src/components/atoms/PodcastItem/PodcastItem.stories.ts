@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PodcastItem } from '../index';
 
 const meta: Meta<typeof PodcastItem> = {
@@ -26,6 +26,7 @@ const imageUrl = 'https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/3e/e4/
 
 export const Default: Story = {
   args: {
+    author: 'John Doe',
     imageUrl,
     title: 'The Amazing Tech Podcast',
   },
@@ -33,6 +34,7 @@ export const Default: Story = {
 
 export const LongTitle: Story = {
   args: {
+    author: 'John Public',
     imageUrl,
     title: 'This is a Very Long Podcast Title That Should Wrap Properly',
   },
@@ -40,6 +42,7 @@ export const LongTitle: Story = {
 
 export const ShortTitle: Story = {
   args: {
+    author: 'JD Plink',
     imageUrl,
     title: 'Fun Show',
   },
@@ -47,6 +50,7 @@ export const ShortTitle: Story = {
 
 export const RealExample: Story = {
   args: {
+    author: 'Joe Rogan',
     imageUrl,
     title: 'The Joe Rogan Experience',
   },

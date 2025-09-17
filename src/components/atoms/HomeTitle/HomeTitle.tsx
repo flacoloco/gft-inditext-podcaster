@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 
 const HomeTitle: FC = () => {
   return (
-    <Link to="/" className="home-title">
-      Podcaster
-    </Link>
+    <div className='home-title-container'>
+      <Link to='/' className='home-title'>
+        Podcaster
+      </Link>
+      <hr />
+    </div>
   );
 };
 
