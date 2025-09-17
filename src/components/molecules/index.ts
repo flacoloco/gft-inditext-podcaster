@@ -1,2 +1,2 @@
 // Export all molecule components here
-// Example: export { default as SearchBar } from './SearchBar';
+export { default as PodcastCard } from './PodcastCard/PodcastCard';

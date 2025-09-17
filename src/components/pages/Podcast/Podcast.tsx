@@ -1,11 +1,35 @@
 import { type FC } from 'react';
-
+import { useParams } from 'react-router-dom';
+import { PodcastCard } from '../../molecules';
+import { useData } from '../../../hooks/useData';
 export const Podcast: FC = () => {
-  return (
-    <div>
-      <h1>Podcast</h1>
-      <p>Podcast details</p>
-      {/* TODO: Add podcast list and search functionality */}
-    </div>
-  );
+  // get id from url params
+  const { id } = useParams<{ id: string }>();
+  console.log('PodcastId:', id);
+  const [data, error, isLoading] = useData(`https://itunes.apple.com/lookup?id=${id}&media=podcast
+&entity=podcastEpisode&limit=20`);
+
+  if (error) {
+    console.error(error.message);
+    return null;
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (data) {
+    return (
+      <div>
+        <PodcastCard
+          image='https://example.com/podcast-image.jpg'
+          title={`Podcast Title for ID: ${id}`}
+          description='This is a description of the podcast. It provides an overview of the content and themes discussed in the episodes.'
+          onClick={() => console.log(`Podcast ${id} clicked`)}
+        />
+      </div>
+    );
+  }
+
+  return null;
 };

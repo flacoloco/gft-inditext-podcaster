@@ -14,7 +14,7 @@ export const App: FC = () => {
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/podcast/:id' element={<Podcast />} />
-              <Route path='/episodes' element={<Episode />} />
+              <Route path='/episode/:id' element={<Episode />} />
             </Routes>
           </main>
         </div>

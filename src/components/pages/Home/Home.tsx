@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useData } from '../../../hooks/useData';
 import { PodcastItem } from '../../atoms';
 import { useNavigate } from 'react-router-dom';
+import { HomeContainer } from './Home.styles';
 
 type listType = {
   contents: string
@@ -20,7 +21,8 @@ export const Home: FC = () => {
   const [data, error, isLoading] = useData<listType>('https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json');
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    console.error(error.message);
+    return null;
   }
 
   if (isLoading) {
@@ -30,7 +32,7 @@ export const Home: FC = () => {
   if (data) {
     const contents = JSON.parse(data.contents);
     return (
-      <div className='podcasts-container'>
+      <HomeContainer>
         {contents.feed?.entry?.map((item: podcastType) => (
           <PodcastItem
             key={item.id.attributes['im:id']}
@@ -40,8 +42,9 @@ export const Home: FC = () => {
             title={item.title.label}
           />
         ))}
-      </div>
+      </HomeContainer>
     );
   }
+
   return null;
 };

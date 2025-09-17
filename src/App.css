@@ -32,38 +32,3 @@ body {
   flex: 1;
   padding: 1rem;
 }
-
-.home-title-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: start;
-}
-
-.home-title {
-  display: inline-block;
-  font-size: 2rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: #007bff;
-  padding: 0.5rem 1rem;
-  transition: all 0.2s ease;
-}
-
-.home-title:hover {
-  text-decoration: underline;
-}
-
-
-
-.podcasts-container {
-  display: grid;
-  width: 900px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
-  justify-items: center;
-  padding-top: 2rem;
-}
