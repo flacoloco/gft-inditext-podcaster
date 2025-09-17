@@ -1,5 +1,6 @@
 import { type FC } from 'react';
 import { useData } from '../../../hooks/useData';
+import { PodcastItem } from '../../atoms';
 
 type listType = {
   contents: {
@@ -39,11 +40,15 @@ export const Home: FC = () => {
       <div>
         <h1>Data Loaded</h1>
         {contents.feed?.entry?.map((item) => (
-          <div key={item.id.attributes['im:id']}>
-            <h2>{item.title.label}</h2>
-            <p>{item.summary.label}</p>
-            <img src={item['im:image'][0].label} alt={item['im:name'].label} />
-          </div>
+          // <div key={item.id.attributes['im:id']}>
+          //   <h2>{item.title.label}</h2>
+          //   <p>{item.summary.label}</p>
+          //   <img src={item['im:image'][0].label} alt={item['im:name'].label} />
+          // </div>
+          <PodcastItem
+            imageUrl={item['im:image'][0].label}
+            title={item.title.label}
+          />
         ))}
       </div>
     );
