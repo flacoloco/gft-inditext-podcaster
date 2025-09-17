@@ -1,6 +1,7 @@
-import { type FC } from 'react';
+import type { FC } from 'react';
 import { useData } from '../../../hooks/useData';
 import { PodcastItem } from '../../atoms';
+import { useNavigate } from 'react-router-dom';
 
 type listType = {
   contents: string
@@ -15,7 +16,7 @@ type podcastType = {
   id: { attributes: { 'im:id': string } };
 };
 export const Home: FC = () => {
-
+  const navigate = useNavigate();
   const [data, error, isLoading] = useData<listType>('https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json');
 
   if (error) {
@@ -35,6 +36,7 @@ export const Home: FC = () => {
             key={item.id.attributes['im:id']}
             author={item['im:artist'].label}
             imageUrl={item['im:image'][0].label}
+            onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
             title={item.title.label}
           />
         ))}

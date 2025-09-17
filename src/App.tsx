@@ -13,7 +13,7 @@ export const App: FC = () => {
           <main className='main-content'>
             <Routes>
               <Route path='/' element={<Home />} />
-              <Route path='/podcast' element={<Podcast />} />
+              <Route path='/podcast/:id' element={<Podcast />} />
               <Route path='/episodes' element={<Episode />} />
             </Routes>
           </main>
