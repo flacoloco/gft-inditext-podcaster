@@ -6,6 +6,7 @@ export const StyledSearchContainer = styled.div`
   justify-content: flex-end;
   width: 100%;
   gap: 10px;
+  paddingBottom: 10px;
 `;
 
 export const StyledSearchInput = styled.input`

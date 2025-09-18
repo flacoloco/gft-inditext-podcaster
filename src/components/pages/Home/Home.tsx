@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 import { useEffect, useState, type FC } from 'react';
 import { useData } from '../../../hooks/useData';
 import { PodcastItem, SearchInput } from '../../atoms';
 import { useNavigate } from 'react-router-dom';
-import { PodcastsGrid } from './Home.styles';
+import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
 
 type listType = {
   contents: string
@@ -31,7 +32,6 @@ export const Home: FC = () => {
         const pods = parsedContents.feed.entry;
         setPodcasts(pods);
         setFilteredPodcasts(pods);
-        console.log('Parsed contents:', parsedContents);
       } catch (e) {
         console.error('Failed to parse contents:', e);
       }
@@ -39,15 +39,11 @@ export const Home: FC = () => {
   }, [data]);
 
   useEffect(() => {
-    console.log('searchValue changed:', searchValue);
     if (podcasts) {
       if (searchValue) {
-        // Implement search functionality here if needed
-        console.log('Searching for:', searchValue);
         const filtered = podcasts.filter((item: podcastType) =>
           item.title.label.toLowerCase().includes(searchValue.toLowerCase())
         );
-        console.log('Filtered results:', filtered);
         setFilteredPodcasts(filtered);
       } else {
         setFilteredPodcasts(podcasts);
@@ -56,7 +52,7 @@ export const Home: FC = () => {
   }, [podcasts, searchValue]);
 
   if (error) {
-    console.error(error.message);
+    console.error(error);
     return null;
   }
 
@@ -68,25 +64,28 @@ export const Home: FC = () => {
   if (filteredPodcasts) {
     const count = filteredPodcasts.length || 0;
     return (
-      <>
+      <StyledHomeContainer>
         <SearchInput
-          placeholder='Search podcasts...'
+          placeholder='Filter podcasts...'
           value={searchValue}
           onChange={setSearchValue}
           count={count}
         />
-        <PodcastsGrid>
-          {filteredPodcasts.map((item: podcastType) => (
-            <PodcastItem
-              key={item.id.attributes['im:id']}
-              author={item['im:artist'].label}
-              imageUrl={item['im:image'][0].label}
-              onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
-              title={item.title.label}
-            />
-          ))}
-        </PodcastsGrid>
-      </>
+        <br />
+        <StyledScrollableContainer>
+          <StyledPodcastsGrid>
+            {filteredPodcasts.map((item: podcastType) => (
+              <PodcastItem
+                key={item.id.attributes['im:id']}
+                author={item['im:artist'].label}
+                imageUrl={item['im:image'][0].label}
+                onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
+                title={item.title.label}
+              />
+            ))}
+          </StyledPodcastsGrid>
+        </StyledScrollableContainer>
+      </StyledHomeContainer>
     );
   }
 

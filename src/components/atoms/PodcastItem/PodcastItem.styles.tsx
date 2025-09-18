@@ -8,7 +8,7 @@ export const StyledPodcastItem = styled.div`
   width: 180px;
   position: relative;
   cursor: pointer;
-  padding-top: 80px;
+  padding-top: 60px;
 `;
 
 export const StyledSpace = styled.div`
