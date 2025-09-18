@@ -1,8 +1,8 @@
-import type { FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { useData } from '../../../hooks/useData';
-import { PodcastItem } from '../../atoms';
+import { PodcastItem, SearchInput } from '../../atoms';
 import { useNavigate } from 'react-router-dom';
-import { HomeContainer } from './Home.styles';
+import { PodcastsGrid } from './Home.styles';
 
 type listType = {
   contents: string
@@ -18,7 +18,42 @@ type podcastType = {
 };
 export const Home: FC = () => {
   const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [podcasts, setPodcasts] = useState<podcastType[] | null>(null);
+  const [filteredPodcasts, setFilteredPodcasts] = useState<podcastType[] | null>(null);
   const [data, error, isLoading] = useData<listType>('https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json');
+
+
+  useEffect(() => {
+    if (data) {
+      try {
+        const parsedContents = JSON.parse(data.contents);
+        const pods = parsedContents.feed.entry;
+        setPodcasts(pods);
+        setFilteredPodcasts(pods);
+        console.log('Parsed contents:', parsedContents);
+      } catch (e) {
+        console.error('Failed to parse contents:', e);
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    console.log('searchValue changed:', searchValue);
+    if (podcasts) {
+      if (searchValue) {
+        // Implement search functionality here if needed
+        console.log('Searching for:', searchValue);
+        const filtered = podcasts.filter((item: podcastType) =>
+          item.title.label.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        console.log('Filtered results:', filtered);
+        setFilteredPodcasts(filtered);
+      } else {
+        setFilteredPodcasts(podcasts);
+      }
+    }
+  }, [podcasts, searchValue]);
 
   if (error) {
     console.error(error.message);
@@ -29,20 +64,29 @@ export const Home: FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (data) {
-    const contents = JSON.parse(data.contents);
+
+  if (filteredPodcasts) {
+    const count = filteredPodcasts.length || 0;
     return (
-      <HomeContainer>
-        {contents.feed?.entry?.map((item: podcastType) => (
-          <PodcastItem
-            key={item.id.attributes['im:id']}
-            author={item['im:artist'].label}
-            imageUrl={item['im:image'][0].label}
-            onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
-            title={item.title.label}
-          />
-        ))}
-      </HomeContainer>
+      <>
+        <SearchInput
+          placeholder='Search podcasts...'
+          value={searchValue}
+          onChange={setSearchValue}
+          count={count}
+        />
+        <PodcastsGrid>
+          {filteredPodcasts.map((item: podcastType) => (
+            <PodcastItem
+              key={item.id.attributes['im:id']}
+              author={item['im:artist'].label}
+              imageUrl={item['im:image'][0].label}
+              onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
+              title={item.title.label}
+            />
+          ))}
+        </PodcastsGrid>
+      </>
     );
   }
 
