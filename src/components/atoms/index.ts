@@ -2,3 +2,4 @@
 export { Header } from './Header/Header';
 export { PodcastItem } from './PodcastItem/PodcastItem';
 export { SearchInput } from './SearchInput/SearchInput';
+export { Loading } from './Loading/Loading';

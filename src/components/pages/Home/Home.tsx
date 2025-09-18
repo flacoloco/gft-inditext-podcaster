@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { useEffect, useState, type FC } from 'react';
 import { useData } from '@src/hooks/useData';
-import { PodcastItem, SearchInput } from '@src/components/atoms';
+import { Header, PodcastItem, SearchInput } from '@src/components/atoms';
 import { useNavigate } from 'react-router-dom';
 import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
 
@@ -17,6 +17,7 @@ type podcastType = {
   title: { label: string };
   id: { attributes: { 'im:id': string } };
 };
+
 export const Home: FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>('');
@@ -58,38 +59,35 @@ export const Home: FC = () => {
     return null;
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const count = filteredPodcasts?.length || 0;
 
-
-  if (filteredPodcasts) {
-    const count = filteredPodcasts.length || 0;
-    return (
-      <StyledHomeContainer>
-        <SearchInput
-          placeholder='Filter podcasts...'
-          value={searchValue}
-          onChange={setSearchValue}
-          count={count}
-        />
-        <br />
-        <StyledScrollableContainer>
-          <StyledPodcastsGrid>
-            {filteredPodcasts.map((item: podcastType) => (
-              <PodcastItem
-                key={item.id.attributes['im:id']}
-                author={item['im:artist'].label}
-                imageUrl={item['im:image'][0].label}
-                onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
-                title={item['im:name'].label}
-              />
-            ))}
-          </StyledPodcastsGrid>
-        </StyledScrollableContainer>
-      </StyledHomeContainer>
-    );
-  }
-
-  return null;
+  return (
+    <StyledHomeContainer>
+      <Header isLoading={isLoading} />
+      {filteredPodcasts && (
+        <>
+          <SearchInput
+            placeholder='Filter podcasts...'
+            value={searchValue}
+            onChange={setSearchValue}
+            count={count}
+          />
+          <br />
+          <StyledScrollableContainer>
+            <StyledPodcastsGrid>
+              {filteredPodcasts.map((item: podcastType) => (
+                <PodcastItem
+                  key={item.id.attributes['im:id']}
+                  author={item['im:artist'].label}
+                  imageUrl={item['im:image'][0].label}
+                  onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
+                  title={item['im:name'].label}
+                />
+              ))}
+            </StyledPodcastsGrid>
+          </StyledScrollableContainer>
+        </>
+      )}
+    </StyledHomeContainer>
+  );
 };
