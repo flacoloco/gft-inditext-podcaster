@@ -5,29 +5,30 @@ import { useState, useEffect } from 'react';
  * @param url - The URL to fetch data from
  * @returns [data, error, isLoading] - Array containing the fetched data, error state, and loading state
  */
-export const useData = <T = unknown>(url: string): [T | null, Error | null, boolean] => {
+export const useData = <T = unknown>(podcastId?: string | undefined): [T | null, Error | null, boolean] => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!url) {
-      return;
-    }
+  const fetchUrl = podcastId
+    ? `https://itunes.apple.com/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=20`
+    : 'https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json';
 
+  useEffect(() => {
     const fetchData = async (): Promise<void> => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(`http://api.allorigins.win/get?url=${url}`);
+        // const response = await fetch(`http://api.allorigins.win/get?url=${encodeURIComponent(fetchUrl)}`);
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(fetchUrl)}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const result = await response.json();
-        console.log(result);
+        console.log('Fetched data from:', `http://api.allorigins.win/get?url=${encodeURIComponent(fetchUrl)}`, result);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('An unknown error occurred'));
@@ -38,7 +39,7 @@ export const useData = <T = unknown>(url: string): [T | null, Error | null, bool
     };
 
     fetchData();
-  }, [url]);
+  }, [fetchUrl]);
 
   return [data, error, isLoading];
 };

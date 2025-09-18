@@ -5,7 +5,7 @@ import { Header, PodcastItem, SearchInput } from '@src/components/atoms';
 import { useNavigate } from 'react-router-dom';
 import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
 
-type listType = {
+type resultType = {
   contents: string
 };
 
@@ -23,7 +23,7 @@ export const Home: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [podcasts, setPodcasts] = useState<podcastType[] | null>(null);
   const [filteredPodcasts, setFilteredPodcasts] = useState<podcastType[] | null>(null);
-  const [data, error, isLoading] = useData<listType>('https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json');
+  const [data, error, isLoading] = useData<resultType>();
 
 
   useEffect(() => {
@@ -31,6 +31,7 @@ export const Home: FC = () => {
       try {
         const parsedContents = JSON.parse(data.contents);
         const pods = parsedContents.feed.entry;
+        console.log('raw Data:', parsedContents);
         setPodcasts(pods);
         setFilteredPodcasts(pods);
       } catch (e) {

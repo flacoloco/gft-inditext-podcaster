@@ -10,8 +10,8 @@ export const App: FC = () => {
       <Layout>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/podcast/:id' element={<Podcast />} />
-          <Route path='/episode/:id' element={<Episode />} />
+          <Route path='/podcast/:podcastId' element={<Podcast />} />
+          <Route path='/podcast/:podcastId/episode/:episodeId' element={<Episode />} />
         </Routes>
       </Layout>
     </Router>
