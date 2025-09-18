@@ -5,12 +5,9 @@ import { Header, PodcastItem, SearchInput } from '@src/components/atoms';
 import { useNavigate } from 'react-router-dom';
 import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
 import { useAppContext } from '@src/contexts';
+import type { PodcastType } from '@src/contexts/AppContext';
 
-type resultType = {
-  contents: string
-};
-
-type podcastType = {
+type PodcastItemProps = {
   'im:artist': { label: string };
   'im:name': { label: string };
   'im:image': { label: string }[];
@@ -19,13 +16,16 @@ type podcastType = {
   id: { attributes: { 'im:id': string } };
 };
 
+type resultType = {
+  contents: string
+};
+
 export const Home: FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [podcasts, setPodcasts] = useState<podcastType[] | null>(null);
-  const [filteredPodcasts, setFilteredPodcasts] = useState<podcastType[] | null>(null);
+  const [filteredPodcasts, setFilteredPodcasts] = useState<PodcastType[] | null>(null);
   const [data, error, isLoading] = useData<resultType>();
-  const { setCurrentPodcast } = useAppContext();
+  const { podcasts, setPodcasts } = useAppContext();
 
 
 
@@ -33,7 +33,14 @@ export const Home: FC = () => {
     if (data) {
       try {
         const parsedContents = JSON.parse(data.contents);
-        const pods = parsedContents.feed.entry;
+        const pods: PodcastType[] = parsedContents.feed.entry.map((item: PodcastItemProps) => ({
+          'im:artist': item['im:artist'].label,
+          'im:name': item['im:name'].label,
+          'im:image': item['im:image'][0].label,
+          summary: item.summary.label,
+          title: item.title.label,
+          id: item.id.attributes['im:id'],
+        }));
         console.log('raw Data:', parsedContents);
         setPodcasts(pods);
         setFilteredPodcasts(pods);
@@ -41,13 +48,13 @@ export const Home: FC = () => {
         console.error('Failed to parse contents:', e);
       }
     }
-  }, [data]);
+  }, [data, setPodcasts]);
 
   useEffect(() => {
     if (podcasts) {
       if (searchValue) {
-        const filtered = podcasts.filter((item: podcastType) =>
-          item.title.label.toLowerCase().includes(searchValue.toLowerCase())
+        const filtered = podcasts.filter((item: PodcastType) =>
+          item.title.toLowerCase().includes(searchValue.toLowerCase())
         );
         setFilteredPodcasts(filtered);
 
@@ -57,17 +64,6 @@ export const Home: FC = () => {
       }
     }
   }, [podcasts, searchValue]);
-
-  const onClickPodcast = (podcast: podcastType): void => {
-    setCurrentPodcast({
-      author: podcast['im:artist'].label,
-      id: podcast.id.attributes['im:id'],
-      description: podcast.summary.label,
-      title: podcast['im:name'].label,
-      imageUrl: podcast['im:image'][0].label,
-    });
-    navigate(`/podcast/${podcast.id.attributes['im:id']}`);
-  };
 
   if (error) {
     console.error(error);
@@ -90,13 +86,13 @@ export const Home: FC = () => {
           <br />
           <StyledScrollableContainer>
             <StyledPodcastsGrid>
-              {filteredPodcasts.map((item: podcastType) => (
+              {filteredPodcasts.map((item: PodcastType) => (
                 <PodcastItem
-                  key={item.id.attributes['im:id']}
-                  author={item['im:artist'].label}
-                  imageUrl={item['im:image'][0].label}
-                  onClick={() => onClickPodcast(item)}
-                  title={item['im:name'].label}
+                  key={item.id}
+                  author={item['im:artist']}
+                  imageUrl={item['im:image']}
+                  onClick={() => navigate(`/podcast/${item.id}`)}
+                  title={item['im:name']}
                 />
               ))}
             </StyledPodcastsGrid>

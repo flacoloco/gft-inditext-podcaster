@@ -6,6 +6,7 @@ import { Header } from '@src/components/atoms';
 import { StyledPodcastContainer } from './Podcast.styles';
 import { formatDate } from '@src/helpers';
 import { useAppContext } from '@src/contexts';
+import type { PodcastType } from '@src/contexts/AppContext';
 
 type resultType = {
   contents: string;
@@ -22,10 +23,11 @@ export const Podcast: FC = () => {
   const { podcastId } = useParams<{ podcastId: string }>();
   const [data, error, isLoading] = useData<resultType>(podcastId);
   const [podcastEpisodes, setPodcastEpisodes] = useState<episodeType[] | null>(null);
-  const { currentPodcast } = useAppContext();
+  const { podcasts } = useAppContext();
 
-  console.log('Current Podcast from context:', currentPodcast);
+  const currentPodcast: PodcastType | undefined = podcasts?.filter(p => p.id === podcastId)[0];
 
+  console.log('currentPodcast:', currentPodcast);
   useEffect(() => {
     if (data) {
       try {
@@ -53,13 +55,13 @@ export const Podcast: FC = () => {
   return (
     <StyledPodcastContainer>
       <Header isLoading={isLoading} />
-      {data && (
+      {currentPodcast && (
         <>
           <PodcastCard
-            author={currentPodcast ? currentPodcast.author : 'Unknown Author'}
-            image={currentPodcast ? currentPodcast.imageUrl : 'https://via.placeholder.com/150'}
-            title={currentPodcast ? currentPodcast.title : 'No title available.'}
-            description={currentPodcast ? currentPodcast.description : 'No description available.'}
+            author={currentPodcast['im:artist']}
+            image={currentPodcast['im:image']}
+            title={currentPodcast['im:name']}
+            description={currentPodcast.summary}
             onClick={() => console.log(`Podcast ${podcastId} clicked`)}
           />
           {podcastEpisodes && podcastEpisodes.length > 0 && (

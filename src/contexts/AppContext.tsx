@@ -1,16 +1,17 @@
 import { createContext, useState, type FC, type ReactNode } from 'react';
 
-export interface CurrentPodcast {
-  author: string;
-  id: string;
-  description: string;
+export interface PodcastType {
+  'im:artist': string;
+  'im:name': string;
+  'im:image': string;
+  summary: string;
   title: string;
-  imageUrl: string;
+  id: string;
 }
 
 export interface ApiContextType {
-  currentPodcast: CurrentPodcast | null;
-  setCurrentPodcast: (podcast: CurrentPodcast | null) => void;
+  podcasts: PodcastType[] | null;
+  setPodcasts: (podcast: PodcastType[] | null) => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -21,11 +22,11 @@ interface ApiProviderProps {
 }
 
 export const AppProvider: FC<ApiProviderProps> = ({ children }) => {
-  const [currentPodcast, setCurrentPodcast] = useState<CurrentPodcast | null>(null);
+  const [podcasts, setPodcasts] = useState<PodcastType[] | null>(null);
 
   const value: ApiContextType = {
-    currentPodcast,
-    setCurrentPodcast,
+    podcasts,
+    setPodcasts,
   };
 
   return (
