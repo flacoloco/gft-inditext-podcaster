@@ -4,6 +4,7 @@ import { useData } from '@src/hooks/useData';
 import { Header, PodcastItem, SearchInput } from '@src/components/atoms';
 import { useNavigate } from 'react-router-dom';
 import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
+import { useAppContext } from '@src/contexts';
 
 type resultType = {
   contents: string
@@ -24,6 +25,8 @@ export const Home: FC = () => {
   const [podcasts, setPodcasts] = useState<podcastType[] | null>(null);
   const [filteredPodcasts, setFilteredPodcasts] = useState<podcastType[] | null>(null);
   const [data, error, isLoading] = useData<resultType>();
+  const { setCurrentPodcast } = useAppContext();
+
 
 
   useEffect(() => {
@@ -55,6 +58,14 @@ export const Home: FC = () => {
     }
   }, [podcasts, searchValue]);
 
+  const onClickPodcast = (podcast: podcastType): void => {
+    setCurrentPodcast({
+      id: podcast.id.attributes['im:id'],
+      description: podcast.summary.label,
+    });
+    navigate(`/podcast/${podcast.id.attributes['im:id']}`);
+  };
+
   if (error) {
     console.error(error);
     return null;
@@ -81,7 +92,7 @@ export const Home: FC = () => {
                   key={item.id.attributes['im:id']}
                   author={item['im:artist'].label}
                   imageUrl={item['im:image'][0].label}
-                  onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
+                  onClick={() => onClickPodcast(item)}
                   title={item['im:name'].label}
                 />
               ))}

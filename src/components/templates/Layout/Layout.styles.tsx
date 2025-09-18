@@ -15,4 +15,5 @@ export const StyledMain = styled.main`
   padding: 0 1rem;
   padding-top: 50px;
   min-height: calc(100vh - 50px);
+  background-color: pink;
 `;

@@ -1,2 +1,3 @@
 // Export all molecule components here
-export { default as PodcastCard } from './PodcastCard/PodcastCard';
+export { PodcastCard } from './PodcastCard/PodcastCard';
+export { EpisodesList } from './EpisodesList/EpisodesList';

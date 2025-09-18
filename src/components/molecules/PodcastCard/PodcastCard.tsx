@@ -14,7 +14,7 @@ interface PodcastCardProps {
   onClick?: () => void;
 }
 
-const PodcastCard: FC<PodcastCardProps> = ({ image, title, description, onClick }) => {
+export const PodcastCard: FC<PodcastCardProps> = ({ image, title, description, onClick }) => {
   return (
     <StyledPodcastCard onClick={onClick}>
       <StyledImage src={image} alt={title} />
@@ -26,5 +26,3 @@ const PodcastCard: FC<PodcastCardProps> = ({ image, title, description, onClick 
     </StyledPodcastCard>
   );
 };
-
-export default PodcastCard;
