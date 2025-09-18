@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { Link } from 'react-router-dom';
 import { HeaderContainer } from './Header.styles';
 
-const Header: FC = () => {
+export const Header: FC = () => {
   return (
     <HeaderContainer>
       <Link to='/'>
@@ -12,4 +12,3 @@ const Header: FC = () => {
   );
 };
 
-export default Header;

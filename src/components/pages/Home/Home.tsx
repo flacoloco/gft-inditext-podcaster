@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { useEffect, useState, type FC } from 'react';
-import { useData } from '../../../hooks/useData';
-import { PodcastItem, SearchInput } from '../../atoms';
+import { useData } from '@src/hooks/useData';
+import { PodcastItem, SearchInput } from '@src/components/atoms';
 import { useNavigate } from 'react-router-dom';
 import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
 

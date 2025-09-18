@@ -1,4 +1,4 @@
 // Export all atom components here
-export { default as Header } from './Header/Header';
-export { default as PodcastItem } from './PodcastItem/PodcastItem';
-export { default as SearchInput } from './SearchInput/SearchInput';
+export { Header } from './Header/Header';
+export { PodcastItem } from './PodcastItem/PodcastItem';
+export { SearchInput } from './SearchInput/SearchInput';

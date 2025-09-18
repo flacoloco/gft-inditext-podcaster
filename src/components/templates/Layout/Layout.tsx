@@ -1,12 +1,12 @@
 import { type FC, type ReactNode } from 'react';
-import { Header } from '../../atoms';
+import { Header } from '@src/components/atoms';
 import { StyledLayout, StyledMain } from './Layout.styles';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout: FC<LayoutProps> = ({ children }) => {
+export const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <StyledLayout>
       <Header />
@@ -17,4 +17,3 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;

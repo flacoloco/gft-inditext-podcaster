@@ -8,7 +8,7 @@ interface SearchInputProps {
   count: number;
 }
 
-const SearchInput: FC<SearchInputProps> = ({
+export const SearchInput: FC<SearchInputProps> = ({
   placeholder = 'Search podcasts...',
   value = '',
   onChange,
@@ -31,4 +31,3 @@ const SearchInput: FC<SearchInputProps> = ({
   );
 };
 
-export default SearchInput;

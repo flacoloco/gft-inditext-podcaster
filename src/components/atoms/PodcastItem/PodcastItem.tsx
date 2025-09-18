@@ -15,7 +15,7 @@ interface PodcastItemProps {
   title: string;
 }
 
-const PodcastItem: FC<PodcastItemProps> = ({ imageUrl, title, author, onClick }) => {
+export const PodcastItem: FC<PodcastItemProps> = ({ imageUrl, title, author, onClick }) => {
   return (
     <StyledPodcastItem onClick={onClick}>
       <StyledSpace />
@@ -30,5 +30,3 @@ const PodcastItem: FC<PodcastItemProps> = ({ imageUrl, title, author, onClick })
     </StyledPodcastItem>
   );
 };
-
-export default PodcastItem;

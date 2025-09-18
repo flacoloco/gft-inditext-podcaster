@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { PodcastCard } from '../../molecules';
-import { useData } from '../../../hooks/useData';
+import { PodcastCard } from '@src/components/molecules';
+import { useData } from '@src/hooks/useData';
 export const Podcast: FC = () => {
   // get id from url params
   const { id } = useParams<{ id: string }>();
