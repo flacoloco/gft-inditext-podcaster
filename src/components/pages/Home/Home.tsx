@@ -45,6 +45,8 @@ export const Home: FC = () => {
           item.title.label.toLowerCase().includes(searchValue.toLowerCase())
         );
         setFilteredPodcasts(filtered);
+
+        console.log('Podcasts:', filtered);
       } else {
         setFilteredPodcasts(podcasts);
       }
@@ -80,7 +82,7 @@ export const Home: FC = () => {
                 author={item['im:artist'].label}
                 imageUrl={item['im:image'][0].label}
                 onClick={() => navigate(`/podcast/${item.id.attributes['im:id']}`)}
-                title={item.title.label}
+                title={item['im:name'].label}
               />
             ))}
           </StyledPodcastsGrid>
