@@ -1,8 +1,11 @@
 import { createContext, useState, type FC, type ReactNode } from 'react';
 
 export interface CurrentPodcast {
+  author: string;
   id: string;
   description: string;
+  title: string;
+  imageUrl: string;
 }
 
 export interface ApiContextType {

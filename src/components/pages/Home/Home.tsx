@@ -60,8 +60,11 @@ export const Home: FC = () => {
 
   const onClickPodcast = (podcast: podcastType): void => {
     setCurrentPodcast({
+      author: podcast['im:artist'].label,
       id: podcast.id.attributes['im:id'],
       description: podcast.summary.label,
+      title: podcast['im:name'].label,
+      imageUrl: podcast['im:image'][0].label,
     });
     navigate(`/podcast/${podcast.id.attributes['im:id']}`);
   };

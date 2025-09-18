@@ -8,7 +8,6 @@ export const StyledEpisodesList = styled.ul`
   height: 400px;
   overflow-y: auto;
   border-radius: 0.5rem;
-  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 

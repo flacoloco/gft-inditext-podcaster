@@ -8,14 +8,9 @@ export const StyledPodcastCard = styled.div`
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
   padding: 16px;
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
 `;
 
 export const StyledImage = styled.img`
@@ -51,10 +46,5 @@ export const StyledDescription = styled.p`
   color: #666;
   margin: 0;
   line-height: 1.4;
-  word-wrap: break-word;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
   text-align: left;
 `;

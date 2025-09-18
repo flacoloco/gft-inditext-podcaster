@@ -5,14 +5,10 @@ import { useData } from '@src/hooks/useData';
 import { Header } from '@src/components/atoms';
 import { StyledPodcastContainer } from './Podcast.styles';
 import { formatDate } from '@src/helpers';
+import { useAppContext } from '@src/contexts';
 
 type resultType = {
   contents: string;
-};
-
-type podcastDetailType = {
-  artistName: string;
-  feedUrl: string;
 };
 
 type episodeType = {
@@ -25,7 +21,10 @@ export const Podcast: FC = () => {
   // get id from url params
   const { podcastId } = useParams<{ podcastId: string }>();
   const [data, error, isLoading] = useData<resultType>(podcastId);
-  const [podcastEpisodes, setPodcastEpisodes] = useState<podcastDetailType[] | null>(null);
+  const [podcastEpisodes, setPodcastEpisodes] = useState<episodeType[] | null>(null);
+  const { currentPodcast } = useAppContext();
+
+  console.log('Current Podcast from context:', currentPodcast);
 
   useEffect(() => {
     if (data) {
@@ -57,9 +56,10 @@ export const Podcast: FC = () => {
       {data && (
         <>
           <PodcastCard
-            image='https://example.com/podcast-image.jpg'
-            title={`Podcast Title for ID: ${podcastId}`}
-            description='This is a description of the podcast. It provides an overview of the content and themes discussed in the episodes.'
+            author={currentPodcast ? currentPodcast.author : 'Unknown Author'}
+            image={currentPodcast ? currentPodcast.imageUrl : 'https://via.placeholder.com/150'}
+            title={currentPodcast ? currentPodcast.title : 'No title available.'}
+            description={currentPodcast ? currentPodcast.description : 'No description available.'}
             onClick={() => console.log(`Podcast ${podcastId} clicked`)}
           />
           {podcastEpisodes && podcastEpisodes.length > 0 && (
