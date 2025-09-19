@@ -79,3 +79,14 @@ export const StyledEpisodeDuration = styled.span<{ $isBold?: boolean }>`
   font-weight: ${({ $isBold }): number => $isBold ? 600 : 400};
 `;
 
+export const StyledEpisodesHeader = styled.h2`
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  margin-bottom: 10px;
+  align-self: flex-start;
+  width: 580px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+`;

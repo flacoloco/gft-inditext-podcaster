@@ -12,15 +12,16 @@ interface PodcastCardProps {
   image: string;
   title: string;
   description: string;
+  onClick?: () => void;
 }
 
-export const PodcastCard: FC<PodcastCardProps> = ({ author, image, title, description }) => {
+export const PodcastCard: FC<PodcastCardProps> = ({ author, image, title, description, onClick }) => {
   return (
     <StyledPodcastCard>
-      <StyledImage src={image} alt={title} />
+      <StyledImage src={image} alt={title} onClick={onClick} />
       <hr style={{ width: '100%', color: 'red' }} />
       <StyledContent>
-        <StyledTitle>{title}</StyledTitle>
+        <StyledTitle onClick={onClick}>{title}</StyledTitle>
         <span>by {author}</span>
         <StyledDescription>{description}</StyledDescription>
       </StyledContent>

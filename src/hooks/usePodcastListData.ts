@@ -54,7 +54,6 @@ export const usePodcastListData = (): [PodcastItemProps[] | null, Error | null, 
           title: item.title.label,
           id: item.id.attributes['im:id'],
         }));
-        console.log('Fetched data from:', fetchUrl, podcasts);
         setData(podcasts);
         localStorage.setItem(dataItem, JSON.stringify({ date: Date.now(), podcasts }));
       } catch (err) {

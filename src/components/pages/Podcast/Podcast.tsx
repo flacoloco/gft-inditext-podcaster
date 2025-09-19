@@ -3,13 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { EpisodesList, PodcastCard } from '@src/components/molecules';
 import { usePodcastData } from '@src/hooks';
 import { Header } from '@src/components/atoms';
-import { StyledPodcastContainer } from './Podcast.styles';
+import { StyledEpisodesContainer, StyledPodcastContainer } from './Podcast.styles';
 import { formatDate } from '@src/helpers';
 import type { PodcastItemProps } from '@src/hooks/usePodcastListData';
 import type { Episode } from '@src/components/molecules/EpisodesList/EpisodesList';
 
 export const Podcast: FC = () => {
-  // get id from url params
   const { podcastId = '' } = useParams<{ podcastId: string }>();
   const [data, error, isLoading] = usePodcastData(podcastId);
   const [podcastEpisodes, setPodcastEpisodes] = useState<Episode[] | null>(null);
@@ -18,8 +17,14 @@ export const Podcast: FC = () => {
   const [currentPodcast, setCurrentPodcast] = useState<PodcastItemProps | undefined>(undefined);
 
   useEffect(() => {
+    if (!podcastsList) {
+      navigate('/');
+    }
+  }, [podcastsList, navigate]);
+
+  useEffect(() => {
     if (podcastsList && podcastId) {
-      const foundPodcast = podcastsList.podcasts.filter((p: PodcastItemProps) => p.id === podcastId)[0];
+      const foundPodcast = podcastsList.podcasts.find((p: PodcastItemProps) => p.id === podcastId);
       setCurrentPodcast(foundPodcast);
     }
   }, [podcastsList, podcastId]);
@@ -28,7 +33,6 @@ export const Podcast: FC = () => {
 
     if (data) {
       try {
-        console.log('Episodes data:', data);
         const episodesData = data.map((episode: Episode) => ({
           trackId: episode.trackId,
           trackName: episode.trackName,
@@ -43,17 +47,11 @@ export const Podcast: FC = () => {
     }
   }, [data]);
 
-  if (!podcastsList) {
-    navigate('/');
-    return null;
-  }
-
   if (error) {
     // eslint-disable-next-line no-console
     console.error(error.message);
     return null;
   }
-
 
   return (
     <StyledPodcastContainer>
@@ -62,18 +60,21 @@ export const Podcast: FC = () => {
         <>
           <PodcastCard
             author={currentPodcast['im:artist']}
+            description={currentPodcast.summary}
             image={currentPodcast['im:image']}
             title={currentPodcast['im:name']}
-            description={currentPodcast.summary}
           />
           {podcastEpisodes && podcastEpisodes.length > 0 && (
-            <EpisodesList
-              episodes={podcastEpisodes}
-              onEpisodeClick={(episode) => navigate(`/podcast/${podcastId}/episode/${episode.trackId}`)}
-            />
+            <StyledEpisodesContainer>
+              <EpisodesList
+                episodes={podcastEpisodes}
+                onEpisodeClick={(episode) => navigate(`/podcast/${podcastId}/episode/${episode.trackId}`)}
+              />
+            </StyledEpisodesContainer>
           )}
         </>
-      )}
-    </StyledPodcastContainer>
+      )
+      }
+    </StyledPodcastContainer >
   );
 };

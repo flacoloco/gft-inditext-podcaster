@@ -8,6 +8,7 @@ import {
   StyledEpisodeDate,
   StyledEpisodeDuration,
   StyledEpisodesListContainer,
+  StyledEpisodesHeader,
 } from './EpisodesList.styles';
 
 export type Episode = {
@@ -31,6 +32,7 @@ export const EpisodesList: FC<EpisodesListProps> = ({ episodes, onEpisodeClick }
 
   return (
     <StyledEpisodesListContainer>
+      <StyledEpisodesHeader>Episodes: {episodes.length}</StyledEpisodesHeader>
       <StyledEpisodesList>
         <StyledEpisodeItem $isEven={false}>
           <StyledEpisodeContent>

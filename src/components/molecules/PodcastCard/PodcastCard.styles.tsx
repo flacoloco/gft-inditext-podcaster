@@ -12,11 +12,12 @@ export const StyledPodcastCard = styled.div`
   padding: 16px;
 `;
 
-export const StyledImage = styled.img`
+export const StyledImage = styled.img<{ onClick?: () => void }>`
   width: 150px;
   height: 150px;
   object-fit: cover;
   border-radius: 0.3rem;
+  cursor: ${({ onClick }: { onClick?: () => void }): string => onClick ? 'pointer' : 'default'};
 `;
 
 export const StyledContent = styled.div`
@@ -26,7 +27,7 @@ export const StyledContent = styled.div`
   flex: 1;
 `;
 
-export const StyledTitle = styled.h3`
+export const StyledTitle = styled.h3<{ onClick?: () => void }>`
   font-size: 1rem;
   font-weight: 600;
   color: #333;
@@ -38,6 +39,7 @@ export const StyledTitle = styled.h3`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   text-align: left;
+  cursor: ${({ onClick }: { onClick?: () => void }): string => onClick ? 'pointer' : 'default'};
 `;
 
 export const StyledDescription = styled.p`

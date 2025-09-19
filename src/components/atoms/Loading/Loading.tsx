@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { StyledLoadingSpinner } from './Loading.styles';
 
 interface LoadingProps {
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export const Loading: FC<LoadingProps> = ({ isLoading }) => {

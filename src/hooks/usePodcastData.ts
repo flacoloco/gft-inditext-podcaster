@@ -12,7 +12,7 @@ export const usePodcastData = (podcastId: string): [Episode[] | null, Error | nu
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
 
-  const dataItem = 'podcastData';
+  const dataItem = `podcastData_${podcastId}`;
 
   const fetchUrl = `https://itunes.apple.com/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=20`;
   const noOriginUrl = 'https://api.allorigins.win/get?url=';
@@ -42,7 +42,7 @@ export const usePodcastData = (podcastId: string): [Episode[] | null, Error | nu
       }
     };
 
-    if (localStorage.getItem('podcastData')) {
+    if (localStorage.getItem(dataItem)) {
       const storedData = JSON.parse(localStorage.getItem(dataItem) || '{}');
       const dataAge = Date.now() - storedData.date;
       const oneDay = 24 * 60 * 60 * 1000;
@@ -54,7 +54,7 @@ export const usePodcastData = (podcastId: string): [Episode[] | null, Error | nu
     }
 
     fetchData();
-  }, [fetchUrl]);
+  }, [dataItem, fetchUrl]);
 
   return [data, error, isLoading];
 };
