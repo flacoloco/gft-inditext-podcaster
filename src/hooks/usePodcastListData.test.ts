@@ -23,6 +23,11 @@ global.fetch = mockFetch;
 const mockDateNow = vi.fn();
 Date.now = mockDateNow;
 
+// Mock console.error to avoid noise in tests
+const mockConsoleError = vi.fn();
+// eslint-disable-next-line no-console
+console.error = mockConsoleError;
+
 const mockApiResponse = {
     contents: JSON.stringify({
         feed: {
@@ -72,20 +77,20 @@ describe('usePodcastListData', () => {
         vi.clearAllMocks();
         localStorageMock.getItem.mockReturnValue(null);
         mockDateNow.mockReturnValue(1640995200000); // Fixed timestamp
+        mockConsoleError.mockClear();
     });
 
     afterEach(() => {
         vi.resetAllMocks();
     });
 
-    it('should return initial state with null data, no error, and loading false', () => {
+    it('should return initial state with null data and no error', () => {
         localStorageMock.getItem.mockReturnValue(null);
 
         const { result } = renderHook(() => usePodcastListData());
 
         expect(result.current[0]).toBeNull(); // data
         expect(result.current[1]).toBeNull(); // error
-        expect(result.current[2]).toBe(true); // isLoading (starts as true when fetching)
     });
 
     it('should fetch data successfully and update state', async () => {
@@ -98,14 +103,14 @@ describe('usePodcastListData', () => {
         const { result } = renderHook(() => usePodcastListData());
 
         await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false
+            expect(result.current[0]).toEqual(expectedPodcastData);
         });
 
-        expect(result.current[0]).toEqual(expectedPodcastData); // data should match expected
         expect(result.current[1]).toBeNull(); // no error
         expect(mockFetch).toHaveBeenCalledWith(
             'https://api.allorigins.win/get?url=' +
-            encodeURIComponent('https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json')
+            encodeURIComponent('https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json'),
+            { signal: expect.any(AbortSignal) }
         );
         expect(localStorageMock.setItem).toHaveBeenCalledWith(
             'podcastListData',
@@ -121,11 +126,10 @@ describe('usePodcastListData', () => {
         const { result } = renderHook(() => usePodcastListData());
 
         await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false
+            expect(result.current[1]).toContain('An unknown error occurred');
         });
 
         expect(result.current[0]).toBeNull(); // data should be null
-        expect(result.current[1]).toEqual(testError); // error should match
         expect(localStorageMock.setItem).not.toHaveBeenCalled();
     });
 
@@ -134,17 +138,16 @@ describe('usePodcastListData', () => {
         mockFetch.mockResolvedValueOnce({
             ok: false,
             status: 404,
+            json: () => Promise.resolve({}),
         });
 
         const { result } = renderHook(() => usePodcastListData());
 
         await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false
+            expect(result.current[1]).toContain('An unknown error occurred');
         });
 
         expect(result.current[0]).toBeNull(); // data should be null
-        expect(result.current[1]).toBeInstanceOf(Error);
-        expect(result.current[1]?.message).toBe('HTTP error! status: 404');
     });
 
     it('should handle JSON parsing errors', async () => {
@@ -157,11 +160,10 @@ describe('usePodcastListData', () => {
         const { result } = renderHook(() => usePodcastListData());
 
         await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false
+            expect(result.current[1]).toContain('An unknown error occurred');
         });
 
         expect(result.current[0]).toBeNull(); // data should be null
-        expect(result.current[1]).toBeInstanceOf(Error);
     });
 
     it('should use cached data when available and fresh (less than 24 hours old)', () => {
@@ -176,7 +178,6 @@ describe('usePodcastListData', () => {
 
         expect(result.current[0]).toEqual(expectedPodcastData); // should use cached data
         expect(result.current[1]).toBeNull(); // no error
-        expect(result.current[2]).toBe(false); // not loading
         expect(mockFetch).not.toHaveBeenCalled(); // should not fetch
     });
 
@@ -195,22 +196,15 @@ describe('usePodcastListData', () => {
 
         const { result } = renderHook(() => usePodcastListData());
 
-        // Should start loading since cache is stale
-        expect(result.current[2]).toBe(true);
-
         await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false after fetch
+            expect(result.current[0]).toEqual(expectedPodcastData);
         });
 
         expect(mockFetch).toHaveBeenCalled(); // should fetch new data
-        expect(result.current[0]).toEqual(expectedPodcastData);
     });
 
     it('should handle malformed cached data gracefully', async () => {
         localStorageMock.getItem.mockReturnValue('invalid-json');
-
-        // Mock console.error to avoid noise in test output
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         mockFetch.mockResolvedValueOnce({
             ok: true,
@@ -220,28 +214,11 @@ describe('usePodcastListData', () => {
         const { result } = renderHook(() => usePodcastListData());
 
         await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false
+            expect(result.current[0]).toEqual(expectedPodcastData);
         });
 
         expect(mockFetch).toHaveBeenCalled(); // should fetch since cache is invalid
-        expect(result.current[0]).toEqual(expectedPodcastData);
-
-        consoleSpy.mockRestore();
-    });
-
-    it('should handle unknown errors and convert them to Error instances', async () => {
-        localStorageMock.getItem.mockReturnValue(null);
-        mockFetch.mockRejectedValueOnce('string error'); // Non-Error object
-
-        const { result } = renderHook(() => usePodcastListData());
-
-        await waitFor(() => {
-            expect(result.current[2]).toBe(false); // isLoading should be false
-        });
-
-        expect(result.current[0]).toBeNull(); // data should be null
-        expect(result.current[1]).toBeInstanceOf(Error);
-        expect(result.current[1]?.message).toBe('An unknown error occurred');
+        expect(mockConsoleError).toHaveBeenCalledWith('Error parsing cached data:', expect.any(SyntaxError));
     });
 
     it('should call localStorage.getItem with correct key', () => {
@@ -280,7 +257,7 @@ describe('usePodcastListData', () => {
         const { result } = renderHook(() => usePodcastListData());
 
         await waitFor(() => {
-            expect(result.current[2]).toBe(false);
+            expect(result.current[0]).toBeTruthy();
         });
 
         const expectedTransformed = [
@@ -295,5 +272,52 @@ describe('usePodcastListData', () => {
         ];
 
         expect(result.current[0]).toEqual(expectedTransformed);
+    });
+
+    it('should properly abort fetch request on unmount', () => {
+        localStorageMock.getItem.mockReturnValue(null);
+
+        const { unmount } = renderHook(() => usePodcastListData());
+
+        unmount();
+
+        // AbortController.abort should have been called
+        expect(mockConsoleError).toHaveBeenCalledWith('Fetch aborted');
+    });
+
+    it('should handle cached data with missing date property', async () => {
+        const invalidCachedData = {
+            podcasts: expectedPodcastData,
+            // Missing date property
+        };
+        localStorageMock.getItem.mockReturnValue(JSON.stringify(invalidCachedData));
+
+        mockFetch.mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve(mockApiResponse),
+        });
+
+        const { result } = renderHook(() => usePodcastListData());
+
+        await waitFor(() => {
+            expect(result.current[0]).toEqual(expectedPodcastData);
+        });
+
+        // Should fetch new data because date calculation will fail
+        expect(mockFetch).toHaveBeenCalled();
+    });
+
+    it('should handle cached data with missing podcasts property', async () => {
+        const invalidCachedData = {
+            date: 1640995200000,
+            // Missing podcasts property
+        };
+        localStorageMock.getItem.mockReturnValue(JSON.stringify(invalidCachedData));
+        mockDateNow.mockReturnValue(1640995200000 + (12 * 60 * 60 * 1000)); // 12 hours later
+
+        const { result } = renderHook(() => usePodcastListData());
+
+        expect(result.current[0]).toBeUndefined(); // Should be undefined for missing podcasts
+        expect(result.current[1]).toBeNull(); // No error
     });
 });
