@@ -8,15 +8,10 @@ import { formatDate } from '@src/helpers';
 import type { PodcastItemProps } from '@src/hooks/usePodcastListData';
 import type { Episode } from '@src/components/molecules/EpisodesList/EpisodesList';
 
-type FetchResult = {
-  contents: string;
-};
-
-
 export const Podcast: FC = () => {
   // get id from url params
-  const { podcastId } = useParams<{ podcastId: string }>();
-  const [data, error, isLoading] = usePodcastData<FetchResult>(podcastId);
+  const { podcastId = '' } = useParams<{ podcastId: string }>();
+  const [data, error, isLoading] = usePodcastData(podcastId);
   const [podcastEpisodes, setPodcastEpisodes] = useState<Episode[] | null>(null);
   const podcastsList = useMemo(() => localStorage.getItem('podcastListData') ? JSON.parse(localStorage.getItem('podcastListData') || '[]') : null, []);
   const navigate = useNavigate();
@@ -33,10 +28,8 @@ export const Podcast: FC = () => {
 
     if (data) {
       try {
-        const parsedContents = JSON.parse(data.contents);
-        const episodes = parsedContents.results.slice(1);
-        console.log('Episodes data:', episodes);
-        const episodesData = episodes.map((episode: Episode) => ({
+        console.log('Episodes data:', data);
+        const episodesData = data.map((episode: Episode) => ({
           trackId: episode.trackId,
           trackName: episode.trackName,
           trackTimeMillis: episode.trackTimeMillis,
