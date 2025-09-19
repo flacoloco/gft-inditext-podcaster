@@ -11,7 +11,7 @@ export const Home: FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [podcasts, setPodcasts] = useState<PodcastItemProps[] | null>(null);
   const [filteredPodcasts, setFilteredPodcasts] = useState<PodcastItemProps[] | null>(null);
-  const [data, error, isLoading] = usePodcastListData();
+  const [data, error] = usePodcastListData();
 
   useEffect(() => {
     if (data) {
@@ -38,18 +38,12 @@ export const Home: FC = () => {
     }
   }, [podcasts, searchValue]);
 
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return null;
-  }
-
   const count = filteredPodcasts?.length || 0;
 
   return (
     <StyledHomeContainer>
-      <Header isLoading={isLoading} />
-      {filteredPodcasts && (
+      <Header isLoading={data === null} />
+      {!error && filteredPodcasts && (
         <>
           <SearchInput
             placeholder='Filter podcasts...'

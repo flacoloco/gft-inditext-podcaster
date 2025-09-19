@@ -10,7 +10,7 @@ import type { Episode } from '@src/components/molecules/EpisodesList/EpisodesLis
 
 export const Podcast: FC = () => {
   const { podcastId = '' } = useParams<{ podcastId: string }>();
-  const [data, error, isLoading] = usePodcastData(podcastId);
+  const [data, error] = usePodcastData(podcastId);
   const [podcastEpisodes, setPodcastEpisodes] = useState<Episode[] | null>(null);
   const podcastsList = useMemo(() => localStorage.getItem('podcastListData') ? JSON.parse(localStorage.getItem('podcastListData') || '[]') : null, []);
   const navigate = useNavigate();
@@ -47,16 +47,10 @@ export const Podcast: FC = () => {
     }
   }, [data]);
 
-  if (error) {
-    // eslint-disable-next-line no-console
-    console.error(error.message);
-    return null;
-  }
-
   return (
     <StyledPodcastContainer>
-      <Header isLoading={isLoading} />
-      {currentPodcast && (
+      <Header isLoading={data === null} />
+      {!error && currentPodcast && (
         <>
           <PodcastCard
             author={currentPodcast['im:artist']}
