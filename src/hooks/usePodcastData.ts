@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
  * @param url - The URL to fetch data from
  * @returns [data, error, isLoading] - Array containing the fetched data, error state, and loading state
  */
-export const useData = <T = unknown>(podcastId?: string | undefined): [T | null, Error | null, boolean] => {
+export const usePodcastData = <T = unknown>(podcastId?: string | undefined): [T | null, Error | null, boolean] => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);

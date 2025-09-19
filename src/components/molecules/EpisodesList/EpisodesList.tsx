@@ -10,11 +10,12 @@ import {
   StyledEpisodesListContainer,
 } from './EpisodesList.styles';
 
-interface Episode {
+export type Episode = {
+  trackId: string;
   trackName: string;
   trackTimeMillis: number;
   releaseDate: string;
-}
+};
 
 interface EpisodesListProps {
   episodes: Episode[];

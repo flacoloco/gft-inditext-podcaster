@@ -9,7 +9,6 @@ export const StyledPodcastCard = styled.div`
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
   padding: 16px;
 `;
 
@@ -47,4 +46,9 @@ export const StyledDescription = styled.p`
   margin: 0;
   line-height: 1.4;
   text-align: left;
+  word-wrap: break-word;
+  overflow-y: auto;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  max-height: 200px;
 `;

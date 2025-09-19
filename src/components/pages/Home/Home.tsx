@@ -1,50 +1,25 @@
-/* eslint-disable no-console */
 import { useEffect, useState, type FC } from 'react';
-import { useData } from '@src/hooks/useData';
-import { Header, PodcastItem, SearchInput } from '@src/components/atoms';
 import { useNavigate } from 'react-router-dom';
+import { usePodcastListData } from '@src/hooks';
+import { Header, PodcastItem, SearchInput } from '@src/components/atoms';
+import type { PodcastItemProps } from '@src/hooks/usePodcastListData';
 import { StyledPodcastsGrid, StyledHomeContainer, StyledScrollableContainer } from './Home.styles';
-import { useAppContext } from '@src/contexts';
-import type { PodcastType } from '@src/contexts/AppContext';
 
-type PodcastItemProps = {
-  'im:artist': { label: string };
-  'im:name': { label: string };
-  'im:image': { label: string }[];
-  summary: { label: string };
-  title: { label: string };
-  id: { attributes: { 'im:id': string } };
-};
-
-type resultType = {
-  contents: string
-};
 
 export const Home: FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>('');
-  const [filteredPodcasts, setFilteredPodcasts] = useState<PodcastType[] | null>(null);
-  const [data, error, isLoading] = useData<resultType>();
-  const { podcasts, setPodcasts } = useAppContext();
-
-
+  const [podcasts, setPodcasts] = useState<PodcastItemProps[] | null>(null);
+  const [filteredPodcasts, setFilteredPodcasts] = useState<PodcastItemProps[] | null>(null);
+  const [data, error, isLoading] = usePodcastListData();
 
   useEffect(() => {
     if (data) {
       try {
-        const parsedContents = JSON.parse(data.contents);
-        const pods: PodcastType[] = parsedContents.feed.entry.map((item: PodcastItemProps) => ({
-          'im:artist': item['im:artist'].label,
-          'im:name': item['im:name'].label,
-          'im:image': item['im:image'][0].label,
-          summary: item.summary.label,
-          title: item.title.label,
-          id: item.id.attributes['im:id'],
-        }));
-        console.log('raw Data:', parsedContents);
-        setPodcasts(pods);
-        setFilteredPodcasts(pods);
+        setPodcasts(data);
+        setFilteredPodcasts(data);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error('Failed to parse contents:', e);
       }
     }
@@ -53,12 +28,10 @@ export const Home: FC = () => {
   useEffect(() => {
     if (podcasts) {
       if (searchValue) {
-        const filtered = podcasts.filter((item: PodcastType) =>
+        const filtered = podcasts.filter((item: PodcastItemProps) =>
           item.title.toLowerCase().includes(searchValue.toLowerCase())
         );
         setFilteredPodcasts(filtered);
-
-        console.log('Podcasts:', filtered);
       } else {
         setFilteredPodcasts(podcasts);
       }
@@ -66,6 +39,7 @@ export const Home: FC = () => {
   }, [podcasts, searchValue]);
 
   if (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
     return null;
   }
@@ -86,7 +60,7 @@ export const Home: FC = () => {
           <br />
           <StyledScrollableContainer>
             <StyledPodcastsGrid>
-              {filteredPodcasts.map((item: PodcastType) => (
+              {filteredPodcasts.map((item: PodcastItemProps) => (
                 <PodcastItem
                   key={item.id}
                   author={item['im:artist']}

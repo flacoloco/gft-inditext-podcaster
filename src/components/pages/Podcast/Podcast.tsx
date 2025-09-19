@@ -1,52 +1,62 @@
-import { useEffect, useState, type FC } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState, type FC } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { EpisodesList, PodcastCard } from '@src/components/molecules';
-import { useData } from '@src/hooks/useData';
+import { usePodcastData } from '@src/hooks';
 import { Header } from '@src/components/atoms';
 import { StyledPodcastContainer } from './Podcast.styles';
 import { formatDate } from '@src/helpers';
-import { useAppContext } from '@src/contexts';
-import type { PodcastType } from '@src/contexts/AppContext';
+import type { PodcastItemProps } from '@src/hooks/usePodcastListData';
+import type { Episode } from '@src/components/molecules/EpisodesList/EpisodesList';
 
-type resultType = {
+type FetchResult = {
   contents: string;
 };
 
-type episodeType = {
-  trackName: string;
-  trackTimeMillis: number;
-  releaseDate: string;
-};
 
 export const Podcast: FC = () => {
   // get id from url params
   const { podcastId } = useParams<{ podcastId: string }>();
-  const [data, error, isLoading] = useData<resultType>(podcastId);
-  const [podcastEpisodes, setPodcastEpisodes] = useState<episodeType[] | null>(null);
-  const { podcasts } = useAppContext();
+  const [data, error, isLoading] = usePodcastData<FetchResult>(podcastId);
+  const [podcastEpisodes, setPodcastEpisodes] = useState<Episode[] | null>(null);
+  const podcastsList = useMemo(() => localStorage.getItem('podcastListData') ? JSON.parse(localStorage.getItem('podcastListData') || '[]') : null, []);
+  const navigate = useNavigate();
+  const [currentPodcast, setCurrentPodcast] = useState<PodcastItemProps | undefined>(undefined);
 
-  const currentPodcast: PodcastType | undefined = podcasts?.filter(p => p.id === podcastId)[0];
-
-  console.log('currentPodcast:', currentPodcast);
   useEffect(() => {
+    if (podcastsList && podcastId) {
+      const foundPodcast = podcastsList.podcasts.filter((p: PodcastItemProps) => p.id === podcastId)[0];
+      setCurrentPodcast(foundPodcast);
+    }
+  }, [podcastsList, podcastId]);
+
+  useEffect(() => {
+
     if (data) {
       try {
         const parsedContents = JSON.parse(data.contents);
         const episodes = parsedContents.results.slice(1);
-        const episodesData = episodes.map((episode: episodeType) => ({
+        console.log('Episodes data:', episodes);
+        const episodesData = episodes.map((episode: Episode) => ({
+          trackId: episode.trackId,
           trackName: episode.trackName,
           trackTimeMillis: episode.trackTimeMillis,
           releaseDate: formatDate(episode.releaseDate),
         }));
         setPodcastEpisodes(episodesData);
-        console.log('episodes:', episodes);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error('Failed to parse contents:', e);
       }
     }
   }, [data]);
 
+  if (!podcastsList) {
+    navigate('/');
+    return null;
+  }
+
   if (error) {
+    // eslint-disable-next-line no-console
     console.error(error.message);
     return null;
   }
@@ -62,12 +72,11 @@ export const Podcast: FC = () => {
             image={currentPodcast['im:image']}
             title={currentPodcast['im:name']}
             description={currentPodcast.summary}
-            onClick={() => console.log(`Podcast ${podcastId} clicked`)}
           />
           {podcastEpisodes && podcastEpisodes.length > 0 && (
             <EpisodesList
               episodes={podcastEpisodes}
-              onEpisodeClick={(episode): void => console.log('Episode clicked:', episode)}
+              onEpisodeClick={(episode) => navigate(`/podcast/${podcastId}/episode/${episode.trackId}`)}
             />
           )}
         </>
