@@ -1,2 +1,2 @@
 // Export all template components here
-// Example: export { default as PageLayout } from './PageLayout';
+export { Layout } from './Layout/Layout';

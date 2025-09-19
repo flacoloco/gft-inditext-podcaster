@@ -1,2 +1,5 @@
 // Export all atom components here
-// Example: export { default as Button } from './Button';
+export { Header } from './Header/Header';
+export { PodcastItem } from './PodcastItem/PodcastItem';
+export { SearchInput } from './SearchInput/SearchInput';
+export { Loading } from './Loading/Loading';

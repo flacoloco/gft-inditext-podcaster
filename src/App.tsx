@@ -1,27 +1,19 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home, Podcast, Episode } from './components/pages';
+import { Layout } from './components/templates';
 import './App.css';
+import type { FC } from 'react';
 
-function App() {
+export const App: FC = () => {
   return (
     <Router>
-      <div className="app">
-        <nav className="nav">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/podcast" className="nav-link">Podcast</Link>
-          <Link to="/episodes" className="nav-link">Episode</Link>
-        </nav>
-
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/podcast" element={<Podcast />} />
-            <Route path="/episodes" element={<Episode />} />
-          </Routes>
-        </main>
-      </div>
+      <Layout>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/podcast/:podcastId' element={<Podcast />} />
+          <Route path='/podcast/:podcastId/episode/:episodeId' element={<Episode />} />
+        </Routes>
+      </Layout>
     </Router>
   );
-}
-
-export default App
+};
