@@ -42,7 +42,7 @@ export const EpisodesList: FC<EpisodesListProps> = ({ episodes, onEpisodeClick }
           </StyledEpisodeContent>
         </StyledEpisodeItem>
         {episodes.map((episode, index) => (
-          <StyledEpisodeItem key={index} $isEven={index % 1 === 0}>
+          <StyledEpisodeItem key={episode.trackId} $isEven={index % 2 === 0}>
             <StyledEpisodeContent>
               <StyledEpisodeTitle>
                 <a

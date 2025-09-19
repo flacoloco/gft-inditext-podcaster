@@ -4,7 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Header } from '../index';
 
 const meta: Meta<typeof Header> = {
-  title: 'Atoms/Header',
   component: Header,
   parameters: {
     layout: 'fullscreen',
