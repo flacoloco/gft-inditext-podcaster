@@ -64,6 +64,7 @@ export const usePodcastData = (podcastId: string): [Episode[] | null, string | n
 
     return (): void => {
       controller.abort();
+      console.error('Fetch aborted');
     };
   }, [dataItem, fetchUrl]);
 
