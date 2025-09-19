@@ -10,6 +10,9 @@ export const useData = <T = unknown>(podcastId?: string | undefined): [T | null,
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+
+  const dataItem = podcastId ? 'podcastData' : 'podcastListData';
+
   const fetchUrl = podcastId
     ? `https://itunes.apple.com/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=20`
     : 'https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json';
@@ -30,6 +33,7 @@ export const useData = <T = unknown>(podcastId?: string | undefined): [T | null,
         const result = await response.json();
         console.log('Fetched data from:', `http://api.allorigins.win/get?url=${encodeURIComponent(fetchUrl)}`, result);
         setData(result);
+        localStorage.setItem(dataItem, JSON.stringify({ date: Date.now(), ...result }));
       } catch (err) {
         setError(err instanceof Error ? err : new Error('An unknown error occurred'));
         setData(null);
@@ -37,6 +41,17 @@ export const useData = <T = unknown>(podcastId?: string | undefined): [T | null,
         setIsLoading(false);
       }
     };
+
+    if (localStorage.getItem('podcastData')) {
+      const storedData = JSON.parse(localStorage.getItem(dataItem) || '{}');
+      const dataAge = Date.now() - storedData.date;
+      const oneDay = 24 * 60 * 60 * 1000;
+
+      if (dataAge < oneDay) {
+        setData(storedData);
+        return;
+      }
+    }
 
     fetchData();
   }, [fetchUrl]);
