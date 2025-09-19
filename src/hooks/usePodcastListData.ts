@@ -65,13 +65,19 @@ export const usePodcastListData = (): [PodcastItemProps[] | null, Error | null, 
     };
 
     if (localStorage.getItem(dataItem)) {
-      const storedData = JSON.parse(localStorage.getItem(dataItem) || '{}');
-      const dataAge = Date.now() - storedData.date;
-      const oneDay = 24 * 60 * 60 * 1000;
+      try {
+        const storedData = JSON.parse(localStorage.getItem(dataItem) || '{}');
+        const dataAge = Date.now() - storedData.date;
+        const oneDay = 24 * 60 * 60 * 1000;
 
-      if (dataAge < oneDay) {
-        setData(storedData.podcasts);
-        return;
+        if (dataAge < oneDay) {
+          setData(storedData.podcasts);
+          return;
+        }
+      } catch (error) {
+        // If parsing fails, continue to fetch new data
+        // eslint-disable-next-line no-console
+        console.error('Error parsing cached data:', error);
       }
     }
 
