@@ -21,11 +21,18 @@ export default defineConfig({
   test: {
     projects: [
       {
+        resolve: {
+          alias: {
+            '@src': path.resolve(__dirname, './src'),
+          },
+        },
         test: {
           name: 'unit',
           include: ['**/*.{test,spec}.{js,ts,tsx}'],
           exclude: ['**/*.stories.{js,ts,tsx}', '**/node_modules/**'],
-          environment: 'node'
+          environment: 'jsdom',
+          setupFiles: ['./src/test-setup.ts'],
+          globals: true
         }
       },
       {
