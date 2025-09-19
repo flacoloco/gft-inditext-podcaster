@@ -15,7 +15,7 @@ const sharedRules = {
 };
 
 export default tseslint.config([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'coverage', 'node_modules']),
   {
     // JavaScript files
     files: ['**/*.{js,jsx}'],
