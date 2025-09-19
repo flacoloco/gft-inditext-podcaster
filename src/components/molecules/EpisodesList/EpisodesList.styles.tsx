@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+export const StyledEpisodesListContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const StyledEpisodesList = styled.ul`
   list-style: none;
   padding: 0;
@@ -37,7 +44,7 @@ export const StyledEpisodeContent = styled.div`
 `;
 
 export const StyledEpisodeTitle = styled.h3`
-  width: 300px;
+  width: 380px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -56,17 +63,19 @@ export const StyledEpisodeTitle = styled.h3`
   }
 `;
 
-export const StyledEpisodeDate = styled.span`
+export const StyledEpisodeDate = styled.span<{ $isBold?: boolean }>`
   font-size: 0.875rem;
   color: #666;
   margin: 0;
+  width: 75px;
+  font-weight: ${({ $isBold }): number => $isBold ? 600 : 400};
 `;
 
-export const StyledEpisodeDuration = styled.span`
+export const StyledEpisodeDuration = styled.span<{ $isBold?: boolean }>`
   font-size: 0.875rem;
   color: #666;
-  font-weight: 500;
-  white-space: nowrap;
-  text-align: right;
-  width: 100px;
+  margin: 0;
+  width: 75px;
+  font-weight: ${({ $isBold }): number => $isBold ? 600 : 400};
 `;
+

@@ -49,6 +49,17 @@ export default defineConfig({
           setupFiles: ['.storybook/vitest.setup.ts']
         }
       }
-    ]
-  }
+    ],
+
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        '**/index.{js,ts,tsx}',
+        '**/*.d.ts',
+        '**/*.stories.{js,ts,tsx}',
+        '**/*.styles.{js,ts,tsx}'
+      ],
+    }
+  },
 });

@@ -7,6 +7,7 @@ import {
   StyledEpisodeTitle,
   StyledEpisodeDate,
   StyledEpisodeDuration,
+  StyledEpisodesListContainer,
 } from './EpisodesList.styles';
 
 interface Episode {
@@ -28,26 +29,35 @@ export const EpisodesList: FC<EpisodesListProps> = ({ episodes, onEpisodeClick }
   };
 
   return (
-    <StyledEpisodesList>
-      {episodes.map((episode, index) => (
-        <StyledEpisodeItem key={index} $isEven={index % 2 === 0}>
+    <StyledEpisodesListContainer>
+      <StyledEpisodesList>
+        <StyledEpisodeItem $isEven={false}>
           <StyledEpisodeContent>
-            <StyledEpisodeTitle>
-              <a
-                href='#'
-                onClick={(e): void => {
-                  e.preventDefault();
-                  handleEpisodeClick(episode);
-                }}
-              >
-                {episode.trackName}
-              </a>
-            </StyledEpisodeTitle>
-            <StyledEpisodeDate>{episode.releaseDate}</StyledEpisodeDate>
-            <StyledEpisodeDuration>{millisToMinutes(episode.trackTimeMillis)}</StyledEpisodeDuration>
+            <StyledEpisodeTitle>Title</StyledEpisodeTitle>
+            <StyledEpisodeDate $isBold>Date</StyledEpisodeDate>
+            <StyledEpisodeDuration $isBold>Duration</StyledEpisodeDuration>
           </StyledEpisodeContent>
         </StyledEpisodeItem>
-      ))}
-    </StyledEpisodesList>
+        {episodes.map((episode, index) => (
+          <StyledEpisodeItem key={index} $isEven={index % 1 === 0}>
+            <StyledEpisodeContent>
+              <StyledEpisodeTitle>
+                <a
+                  href='#'
+                  onClick={(e): void => {
+                    e.preventDefault();
+                    handleEpisodeClick(episode);
+                  }}
+                >
+                  {episode.trackName}
+                </a>
+              </StyledEpisodeTitle>
+              <StyledEpisodeDate>{episode.releaseDate}</StyledEpisodeDate>
+              <StyledEpisodeDuration>{millisToMinutes(episode.trackTimeMillis)}</StyledEpisodeDuration>
+            </StyledEpisodeContent>
+          </StyledEpisodeItem>
+        ))}
+      </StyledEpisodesList>
+    </StyledEpisodesListContainer>
   );
 };

@@ -65,7 +65,10 @@ export const Podcast: FC = () => {
             onClick={() => console.log(`Podcast ${podcastId} clicked`)}
           />
           {podcastEpisodes && podcastEpisodes.length > 0 && (
-            <EpisodesList episodes={podcastEpisodes} />
+            <EpisodesList
+              episodes={podcastEpisodes}
+              onEpisodeClick={(episode): void => console.log('Episode clicked:', episode)}
+            />
           )}
         </>
       )}
