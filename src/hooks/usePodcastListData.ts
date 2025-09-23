@@ -29,7 +29,7 @@ export const usePodcastListData = (): [PodcastItemProps[] | null, string | null]
 
   const dataItem = 'podcastListData';
   const fetchUrl = 'https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json';
-  const noOriginUrl = 'https://api.allorigins.win/get?url=';
+  const noOriginUrl = 'https://corsproxy.io/?url=';
 
   useEffect(() => {
     const controller = new AbortController();
@@ -45,8 +45,7 @@ export const usePodcastListData = (): [PodcastItemProps[] | null, string | null]
         }
 
         const result = await response.json();
-        const parsedContents = JSON.parse(result.contents);
-        const podcasts: PodcastItemProps[] = parsedContents.feed.entry.map((item: PodcastDataProps) => ({
+        const podcasts: PodcastItemProps[] = result.feed.entry.map((item: PodcastDataProps) => ({
           'im:artist': item['im:artist'].label,
           'im:name': item['im:name'].label,
           'im:image': item['im:image'][0].label,
