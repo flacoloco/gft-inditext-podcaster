@@ -14,7 +14,7 @@ export const usePodcastData = (podcastId: string): [Episode[] | null, string | n
   const dataItem = `podcastData_${podcastId}`;
 
   const fetchUrl = `https://itunes.apple.com/lookup?id=${podcastId}&media=podcast&entity=podcastEpisode&limit=20`;
-  const noOriginUrl = 'https://api.allorigins.win/get?url=';
+  const noOriginUrl = 'https://corsproxy.io/?url=';
 
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const usePodcastData = (podcastId: string): [Episode[] | null, string | n
         }
 
         const result = await response.json();
-        const episodes = JSON.parse(result.contents).results.slice(1);
+        const episodes = result.results.slice(1);
         setData(episodes);
         setError(null);
         localStorage.setItem(dataItem, JSON.stringify({ date: Date.now(), episodes }));
